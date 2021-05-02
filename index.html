@@ -75,13 +75,15 @@ function CenterControl(controlDiv, map, iCircle) {
           map: map,
           radius: 5000, // 2.5 km
           editable: false,
-          stroke_weight: 1,
+          stroke_weight: 4,
           always_fit_to_map: false,
-          resize_updown: './lib/resize_updown.png',
-          resize_leftright: './lib/resize_leftright.png' 
+          stroke_color:'orange',
+          fill_opacity:1,
+          fill_color: 'transparent'
         });
 
-        map.addListener("center_changed", () => {
+//center_changed
+        map.addListener("bounds_changed", () => {
           targetRadiusCircle.setCenter(map.getCenter());
           //iCircle.setVisible(false)
         });
