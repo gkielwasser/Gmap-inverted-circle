@@ -20,7 +20,7 @@ and open the template in the editor.
  * This constructor takes the control DIV as an argument.
  * @constructor
  */
-function CenterControl(controlDiv, map) {
+function CenterControl(controlDiv, map, iCircle) {
   // Set CSS for the control border.
   const controlUI = document.createElement("div");
   controlUI.style.backgroundColor = "#fff";
@@ -45,7 +45,7 @@ function CenterControl(controlDiv, map) {
   controlUI.appendChild(controlText);
   // Setup the click event listeners: simply set the map to Chicago.
   controlUI.addEventListener("click", () => {
-    map.setCenter(chicago);
+    iCircle.setCenter(map.getCenter())
   });
 }
     
@@ -58,28 +58,39 @@ function CenterControl(controlDiv, map) {
         });
 
  
-/*
+
         iCircle = new InvertedCircle({
           center: map.getCenter(),
           map: map,
           radius: 5000, // 5 km
-          editable: true,
+          editable: false,
           stroke_weight: 1,
           always_fit_to_map: false,
           resize_updown: './lib/resize_updown.png',
           resize_leftright: './lib/resize_leftright.png' 
-        });*/
+        });
+
+        i2Circle = new InvertedCircle({
+          center: map.getCenter(),
+          map: map,
+          radius: 5000, // 2.5 km
+          editable: false,
+          stroke_weight: 1,
+          always_fit_to_map: false,
+          resize_updown: './lib/resize_updown.png',
+          resize_leftright: './lib/resize_leftright.png' 
+        });
 
         map.addListener("center_changed", () => {
-          //iCircle.setCenter(map.getCenter());
+          i2Circle.setCenter(map.getCenter());
           //iCircle.setVisible(false)
         });
 
         // Create the DIV to hold the control and call the CenterControl()
-      // constructor passing in this DIV.
-      const centerControlDiv = document.createElement("div");
-      CenterControl(centerControlDiv, map);
-      map.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv);
+        // constructor passing in this DIV.
+        const centerControlDiv = document.createElement("div");
+        CenterControl(centerControlDiv, map, iCircle);
+        map.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv);
       }
       // Load the map
       google.maps.event.addDomListener(window, 'load', initialize);
