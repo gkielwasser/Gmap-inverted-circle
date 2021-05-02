@@ -20,7 +20,7 @@ and open the template in the editor.
  * This constructor takes the control DIV as an argument.
  * @constructor
  */
-function CenterControl(controlDiv, map, iCircle) {
+function CenterControl(controlDiv, map, callback) {
   // Set CSS for the control border.
   const controlUI = document.createElement("div");
   controlUI.style.backgroundColor = "#fff";
@@ -44,8 +44,10 @@ function CenterControl(controlDiv, map, iCircle) {
   controlText.innerHTML = "Voir les commerces ici";
   controlUI.appendChild(controlText);
   // Setup the click event listeners: simply set the map to Chicago.
-  controlUI.addEventListener("click", () => {
-    iCircle.setCenter(map.getCenter())
+  controlUI.addEventListener("click", function() {
+    if(callback){
+      callback();
+    }
   });
 }
     
@@ -67,7 +69,11 @@ function CenterControl(controlDiv, map, iCircle) {
           stroke_weight: 1,
           always_fit_to_map: false,
           resize_updown: './lib/resize_updown.png',
-          resize_leftright: './lib/resize_leftright.png' 
+          resize_leftright: './lib/resize_leftright.png' ,
+          center_marker_visible:false,
+          draggable:false,
+          fill_opacity:0,
+          stroke_color:"gray"
         });
 
         targetRadiusCircle = new InvertedCircle({
@@ -75,23 +81,28 @@ function CenterControl(controlDiv, map, iCircle) {
           map: map,
           radius: 5000, // 2.5 km
           editable: false,
-          stroke_weight: 4,
+          stroke_weight: 3,
           always_fit_to_map: false,
-          stroke_color:'orange',
-          fill_opacity:1,
-          fill_color: 'transparent'
+          stroke_color:'#e0ac08',
+          //fill_opacity:0.3,
+         // fill_color: 'grey',
+          draggable:true,
+          center_marker_visible:true
         });
 
-//center_changed
+/*
+        //center_changed
         map.addListener("bounds_changed", () => {
           targetRadiusCircle.setCenter(map.getCenter());
           //iCircle.setVisible(false)
-        });
+        });*/
 
         // Create the DIV to hold the control and call the CenterControl()
         // constructor passing in this DIV.
         const centerControlDiv = document.createElement("div");
-        CenterControl(centerControlDiv, map, currentRadiusCircle);
+        CenterControl(centerControlDiv, map, function(){
+          currentRadiusCircle.setCenter(targetRadiusCircle.getCenter())
+        });
         map.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv);
       }
       // Load the map
